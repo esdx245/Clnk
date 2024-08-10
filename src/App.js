@@ -5,30 +5,30 @@ function App() {
   const [small_width, setWidth] = useState('');
   const [small_height, setHeight] = useState('');
   const [result, setResult] = useState(0);
+  const [dimensions, setDimensions] = useState({ width: 251, height: 371 }); // Initial dimensions
+
   const savewidth = (e) => {
     setWidth(e.target.value);
   };
   const saveheight = (e) => {
     setHeight(e.target.value);
   };
-  const width = 251;
-  const height = 371;
+
   const maxRectangles = (width, height, small_width, small_height) => {
     // 가로 방향으로 배치했을 때
-
-    var count_width =
+    const count_width =
       Math.floor(width / small_width) * Math.floor(height / small_height);
-    var remaining_width = width % small_width;
-    var additional_count_width =
+    const remaining_width = width % small_width;
+    const additional_count_width =
       Math.floor(remaining_width / small_height) *
       Math.floor(height / small_width);
 
     // 세로 방향으로 배치했을 때
-    var count_height =
+    const count_height =
       Math.floor(width / small_height) * Math.floor(height / small_width);
-    remaining_width = width % small_height;
-    var additional_count_height =
-      Math.floor(remaining_width / small_width) *
+    const remaining_height = height % small_height;
+    const additional_count_height =
+      Math.floor(remaining_height / small_width) *
       Math.floor(height / small_height);
 
     // 두 방향 중에서 더 많이 배치할 수 있는 방향을 선택
@@ -41,9 +41,23 @@ function App() {
       return count_height + additional_count_height;
     }
   };
+
   useEffect(() => {
-    setResult(maxRectangles(width, height, small_width, small_height));
-  }, [width, height, small_width, small_height]);
+    if (small_width && small_height) {
+      setResult(
+        maxRectangles(
+          dimensions.width,
+          dimensions.height,
+          small_width,
+          small_height
+        )
+      );
+    }
+  }, [small_width, small_height, dimensions]);
+
+  const handleSizeChange = (width, height) => {
+    setDimensions({ width, height });
+  };
 
   return (
     <div className="App">
@@ -64,6 +78,9 @@ function App() {
         value={small_height}
         onChange={saveheight}
       />
+      <br />
+      <button onClick={() => handleSizeChange(251, 371)}>251x371</button>
+      <button onClick={() => handleSizeChange(274, 414)}>274x414</button>
       <br />
       <h1>{result}</h1>
     </div>
